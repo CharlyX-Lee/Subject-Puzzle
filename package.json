@@ -1,0 +1,29 @@
+{
+  "name": "subject-puzzle",
+  "version": "1.0.0",
+  "description": "A Qwen-powered guessing game with multiple subjects",
+  "main": "server.js",
+  "scripts": {
+    "start": "node start.js",
+    "start:admin": "node admin.js",
+    "dev": "nodemon server.js",
+    "dev:admin": "nodemon admin.js",
+    "build": "cd client && npm run build",
+    "test-db": "node test-mongodb.js",
+    "init-db": "node init-db.js",
+    "setup": "npm install && node test-mongodb.js && node init-db.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^7.5.0",
+    "node-fetch": "^2.7.0",
+    "ws": "^8.18.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

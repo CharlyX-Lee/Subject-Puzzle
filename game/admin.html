@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理员面板 - 学科猜词海龟汤</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        h1 {
+            color: #333;
+            margin: 0;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 14px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #667eea;
+            color: #667eea;
+        }
+        
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        
+        .card h2 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            text-align: center;
+        }
+        
+        .stat-item {
+            padding: 10px;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .stat-label {
+            color: #666;
+        }
+        
+        .users-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .users-table th,
+        .users-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .users-table th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        
+        .users-table tr:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .role-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .role-admin {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        
+        .role-user {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        
+        .delete-btn {
+            background-color: #ffcdd2;
+            color: #c62828;
+        }
+        
+        .make-admin-btn {
+            background-color: #bbdefb;
+            color: #1565c0;
+        }
+        
+        .error {
+            color: #e74c3c;
+            text-align: center;
+            padding: 10px;
+            display: none;
+        }
+        
+        .success {
+            color: #27ae60;
+            text-align: center;
+            padding: 10px;
+            display: none;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .rooms-list {
+            margin-top: 20px;
+        }
+        
+        .room-item {
+            background: #f5f5f5;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .room-info h3 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+        
+        .room-info p {
+            margin: 5px 0;
+            color: #666;
+        }
+        
+        .room-actions .delete-btn {
+            background: #ff4444;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        
+        .room-actions .delete-btn:hover {
+            background: #cc0000;
+        }
+        
+        footer {
+            text-align: center;
+            color: white;
+            padding: 20px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>学科猜词海龟汤 - 管理员面板</h1>
+            <div class="user-info">
+                <span id="adminName">管理员</span>
+                <button class="btn" id="logoutBtn">退出登录</button>
+            </div>
+        </header>
+        
+        <div class="error" id="error"></div>
+        <div class="success" id="success"></div>
+        
+        <div class="dashboard">
+            <div class="card">
+                <h2>统计信息</h2>
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="totalUsers">0</div>
+                        <div class="stat-label">总用户数</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="totalGames">0</div>
+                        <div class="stat-label">总游戏数</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2>系统状态</h2>
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="adminUsers">0</div>
+                        <div class="stat-label">管理员数</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="activeGames">0</div>
+                        <div class="stat-label">进行中游戏</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <h2>操作</h2>
+                <button class="btn" id="refreshStatsBtn">刷新统计</button>
+                <button class="btn btn-outline" id="refreshUsersBtn">刷新用户列表</button>
+            </div>
+        </div>
+        
+        <div class="main-content">
+            <div class="tabs">
+                <button class="tab-button active" onclick="showTab('users')">用户管理</button>
+                <button class="tab-button" id="roomsTab" onclick="showTab('rooms')">房间管理</button>
+            </div>
+            
+            <div id="users" class="tab-content active">
+                <h2>用户管理</h2>
+                <table class="users-table">
+                    <thead>
+                        <tr>
+                            <th>用户名</th>
+                            <th>邮箱</th>
+                            <th>角色</th>
+                            <th>积分</th>
+                            <th>注册时间</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="usersList">
+                        <tr>
+                            <td colspan="6" style="text-align: center;">加载中...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div id="rooms" class="tab-content">
+                <h2>房间管理</h2>
+                <div class="controls">
+                    <button onclick="fetchRooms()">刷新房间列表</button>
+                </div>
+                <div id="roomsList" class="rooms-list">
+                    <p>加载中...</p>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>基于通义千问大模型技术 | 学科猜词海龟汤 - Subject Puzzle</p>
+        </footer>
+    </div>
+
+    <script>
+        // 全局变量
+        let currentUser = null;
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 检查用户是否已登录
+            const token = localStorage.getItem('token');
+            const user = JSON.parse(localStorage.getItem('user'));
+            
+            if (token && user) {
+                currentUser = user;
+                document.getElementById('adminName').textContent = user.username;
+                
+                // 检查是否为管理员
+                if (user.role !== 'admin') {
+                    alert('权限不足，无法访问管理员面板');
+                    window.location.href = '/';
+                    return;
+                }
+                
+                // 加载仪表板数据和用户列表
+                loadStats();
+                loadUsers();
+            } else {
+                // 未登录跳转到登录页面
+                window.location.href = '/login.html';
+                return;
+            }
+            
+            // 绑定事件
+            bindEvents();
+        });
+        
+        // 绑定事件
+        function bindEvents() {
+            // 退出登录
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = '/login.html';
+            });
+            
+            // 刷新统计
+            document.getElementById('refreshStatsBtn').addEventListener('click', loadStats);
+            
+            // 刷新用户列表
+            document.getElementById('refreshUsersBtn').addEventListener('click', loadUsers);
+        }
+        
+        // 加载统计数据
+        async function loadStats() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/admin/stats', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('totalUsers').textContent = data.totalUsers || 0;
+                    document.getElementById('adminUsers').textContent = data.adminUsers || 0;
+                    document.getElementById('totalGames').textContent = data.totalRooms || 0;
+                    document.getElementById('activeGames').textContent = data.activeRooms || 0;
+                } else {
+                    showError(data.message || '获取统计数据失败');
+                }
+            } catch (error) {
+                showError('网络错误，请稍后重试');
+            }
+        }
+        
+        // 加载用户列表
+        async function loadUsers() {
+            try {
+                const token = localStorage.getItem('token');
+                const currentUser = JSON.parse(localStorage.getItem('user'));
+                const response = await fetch('/api/admin/users', {
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    const usersList = document.getElementById('usersList');
+                    // 清空默认提示行
+                    usersList.innerHTML = '';
+                    
+                    if (data && data.length > 0) {
+                        data.forEach(user => {
+                            const row = document.createElement('tr');
+                            
+                            // 检查是否为当前登录用户
+                            const isCurrentUser = currentUser.id === user._id;
+                            
+                            row.innerHTML = 
+                                '<td>' + user.username + '</td>' +
+                                '<td>' + user.email + '</td>' +
+                                '<td><span class="role-badge role-' + user.role + '">' + (user.role === 'admin' ? '管理员' : '用户') + '</span></td>' +
+                                '<td>' + (user.score || 0) + '</td>' +
+                                '<td>' + new Date(user.createdAt).toLocaleDateString() + '</td>' +
+                                '<td>' +
+                                    '<select class="role-select" data-user-id="' + user._id + '" ' + (isCurrentUser ? 'disabled' : '') + ' onchange="changeUserRole(\'' + user._id + '\', this.value)">' +
+                                        '<option value="user" ' + (user.role === 'user' ? 'selected' : '') + '>用户</option>' +
+                                        '<option value="admin" ' + (user.role === 'admin' ? 'selected' : '') + '>管理员</option>' +
+                                    '</select>' +
+                                    (isCurrentUser ? '<span style="font-size: 12px; color: #999;">(自己)</span>' : '<button class="btn btn-outline" onclick="deleteUser(\'' + user._id + '\')">删除</button>') +
+                                '</td>';
+                            
+                            usersList.appendChild(row);
+                        });
+                    } else {
+                        usersList.innerHTML = '<tr><td colspan="6" style="text-align: center;">暂无用户</td></tr>';
+                    }
+                } else {
+                    showError(data.message || '获取用户列表失败');
+                }
+            } catch (error) {
+                showError('网络错误，请稍后重试');
+            }
+        }
+        
+        // 显示错误信息
+        function showError(message) {
+            const errorElement = document.getElementById('error');
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+            
+            setTimeout(() => {
+                errorElement.style.display = 'none';
+            }, 3000);
+        }
+        
+        // 显示成功信息
+        function showSuccess(message) {
+            const successElement = document.getElementById('success');
+            successElement.textContent = message;
+            successElement.style.display = 'block';
+            
+            setTimeout(() => {
+                successElement.style.display = 'none';
+            }, 3000);
+        }
+        
+        // 更改用户角色
+        async function changeUserRole(userId, role) {
+            // 获取当前登录用户信息
+            const currentUser = JSON.parse(localStorage.getItem('user'));
+            
+            // 防止管理员修改自己的角色
+            if (currentUser.id === userId) {
+                showError('不能修改自己的角色');
+                // 重置选择框到之前的状态
+                const selectElements = document.querySelectorAll('.role-select[data-user-id="' + userId + '"]');
+                selectElements.forEach(select => {
+                    // 找到之前选中的选项
+                    const options = select.querySelectorAll('option');
+                    options.forEach(option => {
+                        if (option.selected) {
+                            select.value = option.value;
+                        }
+                    });
+                });
+                return;
+            }
+            
+            if (!confirm('确定要更改该用户的角色吗？')) {
+                // 重置选择框到之前的状态
+                const selectElements = document.querySelectorAll('.role-select[data-user-id="' + userId + '"]');
+                selectElements.forEach(select => {
+                    // 找到之前选中的选项
+                    const options = select.querySelectorAll('option');
+                    options.forEach(option => {
+                        if (option.selected) {
+                            select.value = option.value;
+                        }
+                    });
+                });
+                return;
+            }
+            
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/admin/users/' + userId + '/role', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({ role: role })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showSuccess('用户角色更新成功');
+                    loadUsers(); // 刷新用户列表
+                } else {
+                    showError(data.message || '更新用户角色失败');
+                    // 重置选择框到之前的状态
+                    const selectElements = document.querySelectorAll('.role-select[data-user-id="' + userId + '"]');
+                    selectElements.forEach(select => {
+                        // 找到之前选中的选项
+                        const options = select.querySelectorAll('option');
+                        options.forEach(option => {
+                            if (option.selected) {
+                                select.value = option.value;
+                            }
+                        });
+                    });
+                }
+            } catch (error) {
+                showError('网络错误，请稍后重试');
+                // 重置选择框到之前的状态
+                const selectElements = document.querySelectorAll('.role-select[data-user-id="' + userId + '"]');
+                selectElements.forEach(select => {
+                    // 找到之前选中的选项
+                    const options = select.querySelectorAll('option');
+                    options.forEach(option => {
+                        if (option.selected) {
+                            select.value = option.value;
+                        }
+                    });
+                });
+            }
+        }
+        
+        // 删除用户
+        async function deleteUser(userId) {
+            if (!confirm('确定要删除该用户吗？此操作不可恢复！')) {
+                return;
+            }
+            
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/admin/users/' + userId, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showSuccess('用户删除成功');
+                    loadUsers(); // 刷新用户列表
+                } else {
+                    showError(data.message || '删除用户失败');
+                }
+            } catch (error) {
+                showError('网络错误，请稍后重试');
+            }
+        }
+        
+        // 获取所有房间
+        async function fetchRooms() {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/admin/rooms', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    displayRooms(data);
+                } else {
+                    showError(data.message || '获取房间列表失败');
+                }
+            } catch (error) {
+                showError('网络错误，请稍后重试');
+            }
+        }
+        
+        // 显示房间列表
+        function displayRooms(rooms) {
+            const roomsList = document.getElementById('roomsList');
+            roomsList.innerHTML = '';
+            
+            if (rooms && rooms.length > 0) {
+                rooms.forEach(room => {
+                    const roomElement = document.createElement('div');
+                    roomElement.className = 'room-item';
+                    roomElement.innerHTML = 
+                        '<div class="room-info">' +
+                            '<h3>房间名称: ' + room.name + '</h3>' +
+                            '<p>创建者: ' + (room.creator?.username || '未知') + '</p>' +
+                            '<p>玩家数量: ' + (room.players?.length || 0) + '/' + room.maxPlayers + '</p>' +
+                            '<p>状态: ' + (room.status === 'waiting' ? '等待中' : room.status === 'playing' ? '游戏中' : '已结束') + '</p>' +
+                            '<p>创建时间: ' + new Date(room.createdAt).toLocaleString() + '</p>' +
+                        '</div>' +
+                        '<div class="room-actions">' +
+                            '<button onclick="deleteRoom(\'' + room._id + '\')" class="delete-btn">删除房间</button>' +
+                        '</div>';
+                    roomsList.appendChild(roomElement);
+                });
+            } else {
+                roomsList.innerHTML = '<p>暂无房间</p>';
+            }
+        }
+        
+        // 删除房间
+        async function deleteRoom(roomId) {
+            if (!confirm('确定要删除这个房间吗？')) {
+                return;
+            }
+            
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/admin/rooms/' + roomId, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showSuccess('房间删除成功');
+                    fetchRooms(); // 刷新房间列表
+                } else {
+                    showError(data.message || '删除房间失败');
+                }
+            } catch (error) {
+                showError('网络错误，请稍后重试');
+            }
+        }
+        
+        // 切换标签页
+        function showTab(tabName) {
+            // 隐藏所有标签内容
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // 移除所有标签按钮的活动状态
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // 显示选中的标签内容
+            const targetTab = document.getElementById(tabName);
+            if (targetTab) {
+                targetTab.classList.add('active');
+            }
+            
+            // 设置选中标签按钮的活动状态
+            if (event && event.currentTarget) {
+                event.currentTarget.classList.add('active');
+            }
+            
+            // 如果是房间标签，加载房间数据
+            if (tabName === 'rooms') {
+                fetchRooms();
+            }
+        }
+    </script>
+</body>
+</html>

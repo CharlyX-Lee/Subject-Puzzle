@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学科海龟汤 - 多人游戏</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            color: white;
+        }
+
+        .game-info {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .user-account {
+            font-size: 18px;
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 20px;
+        }
+
+        .main-content {
+            text-align: center;
+            padding: 50px 20px;
+            min-height: calc(100vh - 140px);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .soup-title {
+            font-size: 36px;
+            color: white;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        .interaction-area {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px auto;
+            width: 80%;
+            min-height: 400px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .interaction-area h2 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .question-area {
+            flex: 1;
+            padding: 20px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #333;
+        }
+
+        .answer-area {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .answer-input {
+            flex: 1;
+            padding: 15px;
+            font-size: 18px;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+        }
+
+        .submit-button {
+            padding: 15px 30px;
+            font-size: 20px;
+            background: linear-gradient(45deg, #45B7D1, #96C93D);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .submit-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .players-status {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .player-status {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px 15px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .player-status.ready::before {
+            content: "✓";
+            color: #4CAF50;
+        }
+
+        .timer {
+            font-size: 24px;
+            color: white;
+            font-weight: bold;
+            margin: 20px 0;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .back-button {
+            position: fixed;
+            left: 20px;
+            bottom: 20px;
+            padding: 15px 30px;
+            font-size: 20px;
+            background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .back-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px 20px;
+            }
+            
+            .game-info {
+                font-size: 20px;
+            }
+            
+            .user-account {
+                font-size: 16px;
+                padding: 8px 15px;
+            }
+            
+            .main-content {
+                padding: 30px 10px;
+                min-height: calc(100vh - 120px);
+            }
+            
+            .soup-title {
+                font-size: 28px;
+                margin-bottom: 20px;
+            }
+            
+            .interaction-area {
+                width: 90%;
+                padding: 20px;
+                min-height: 300px;
+            }
+            
+            .question-area {
+                min-height: 150px;
+                font-size: 20px;
+            }
+            
+            .answer-input {
+                padding: 12px;
+                font-size: 16px;
+            }
+            
+            .submit-button {
+                padding: 12px 25px;
+                font-size: 18px;
+            }
+            
+            .player-status {
+                font-size: 14px;
+                padding: 8px 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .game-info {
+                font-size: 18px;
+            }
+            
+            .soup-title {
+                font-size: 24px;
+            }
+            
+            .interaction-area {
+                width: 95%;
+                min-height: 250px;
+            }
+            
+            .question-area {
+                min-height: 120px;
+                font-size: 18px;
+            }
+            
+            .answer-area {
+                flex-direction: column;
+            }
+            
+            .answer-input {
+                width: 100%;
+            }
+            
+            .submit-button {
+                width: 100%;
+            }
+            
+            .footer {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="game-info">房间名称 - 多人游戏</div>
+        <div class="user-account" id="usernameDisplay">游客</div>
+    </div>
+
+    <div class="main-content">
+        <div class="timer">已用时间: 00:00</div>
+        
+        <h1 class="soup-title">汤面：</h1>
+        
+        <div class="players-status">
+            <div class="player-status ready" id="player1">用户1 (你)</div>
+            <div class="player-status ready" id="player2">用户2</div>
+            <div class="player-status" id="player3">用户3</div>
+            <div class="player-status" id="player4">用户4</div>
+            <div class="player-status" id="player5">用户5</div>
+        </div>
+        
+        <div class="interaction-area">
+            <h2>问题区域</h2>
+            <div class="question-area">
+                这里是海龟汤的问题描述区域，后期会与后端结合显示具体问题
+            </div>
+            
+            <div class="answer-area">
+                <input type="text" class="answer-input" placeholder="请输入你的答案...">
+                <button class="submit-button">提交答案</button>
+            </div>
+        </div>
+    </div>
+
+    <button class="back-button" onclick="goBack()">返回</button>
+
+    <div class="footer">
+        <p>学科海龟汤游戏 © 2025</p>
+    </div>
+
+    <script>
+        function goBack() {
+            // 返回到房间页面
+            const urlParams = new URLSearchParams(window.location.search);
+            const room = urlParams.get('room') || '默认房间';
+            window.location.href = 'room.html?room=' + encodeURIComponent(room);
+        }
+
+        // 页面加载时根据URL参数设置房间名称
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const roomName = urlParams.get('room');
+            
+            if (roomName) {
+                document.querySelector('.game-info').textContent = roomName + ' - 多人游戏';
+            }
+            
+            // 检查用户登录状态并更新显示
+            checkLoginStatus();
+            // 更新房间玩家列表
+            updateRoomPlayers(roomName);
+        }
+
+        // 检查用户登录状态并更新显示
+        function checkLoginStatus() {
+            const user = localStorage.getItem('user');
+            const usernameDisplay = document.getElementById('usernameDisplay');
+            
+            if (user) {
+                const userData = JSON.parse(user);
+                usernameDisplay.textContent = userData.username;
+                
+                // 更新当前用户显示
+                document.getElementById('player1').textContent = userData.username + ' (你)';
+            } else {
+                usernameDisplay.textContent = '游客';
+                document.getElementById('player1').textContent = '游客 (你)';
+            }
+        }
+        
+        // 更新房间玩家列表
+        function updateRoomPlayers(roomName) {
+            if (!roomName) return;
+            
+            // 获取房间信息
+            let rooms = JSON.parse(localStorage.getItem('rooms') || '{}');
+            const room = rooms[roomName];
+            
+            if (room) {
+                // 更新玩家显示
+                const players = room.players;
+                for (let i = 0; i < 5; i++) {
+                    const playerElement = document.getElementById(`player${i+1}`);
+                    if (i < players.length) {
+                        playerElement.textContent = players[i].username;
+                    } else {
+                        playerElement.textContent = '(无)';
+                    }
+                }
+            }
+        }
+
+        // 提交答案按钮事件
+        document.querySelector('.submit-button').addEventListener('click', function() {
+            const answer = document.querySelector('.answer-input').value;
+            if (answer.trim() === '') {
+                alert('请输入答案');
+            } else {
+                alert('提交答案：' + answer + '\n（此处后期会与后端交互）');
+            }
+        });
+
+        // 模拟已用时间计时器
+        let timeElapsed = 0; // 已用时间（秒）
+        const timerElement = document.querySelector('.timer');
+        
+        const timer = setInterval(() => {
+            timeElapsed++;
+            const minutes = Math.floor(timeElapsed / 60);
+            const seconds = timeElapsed % 60;
+            timerElement.textContent = `已用时间: ${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }, 1000);
+    </script>
+</body>
+</html>

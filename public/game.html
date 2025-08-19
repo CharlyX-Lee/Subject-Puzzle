@@ -1,0 +1,1646 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>游戏大厅 - 学科猜词海龟汤</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        h1 {
+            color: #333;
+            margin: 0;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 14px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: opacity 0.3s;
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #667eea;
+            color: #667eea;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
+        }
+        
+        .game-area {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .panel {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        
+        .subjects-panel {
+            width: 300px;
+        }
+        
+        .subjects-panel h2 {
+            margin-top: 0;
+            color: #333;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        
+        .subject-list {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .subject-item {
+            padding: 12px 15px;
+            margin-bottom: 10px;
+            background: #f9f9f9;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .subject-item:hover {
+            background: #e9e9e9;
+        }
+        
+        .subject-item.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .game-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .room-panel {
+            flex: 1;
+        }
+        
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .game-content {
+            flex: 1;
+            min-height: 300px;
+        }
+        
+        .question-input {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .question-input input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .history {
+            background: #f9f9f9;
+            border-radius: 5px;
+            padding: 15px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+        
+        .history-item {
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed #ddd;
+        }
+        
+        .history-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        
+        .question-text {
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .answer-text {
+            color: #666;
+        }
+        
+        .hint-area {
+            background: #fff8e1;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .message {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+        }
+        
+        .error {
+            color: #e74c3c;
+            text-align: center;
+            padding: 10px;
+            display: none;
+        }
+        
+        .success {
+            color: #27ae60;
+            text-align: center;
+            padding: 10px;
+            display: none;
+        }
+        
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            background: #e3f2fd;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .info-item {
+            text-align: center;
+        }
+        
+        .info-label {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .info-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .room-info {
+            display: flex;
+            justify-content: space-between;
+            background: #e8f5e9;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .players-list {
+            background: #f5f5f5;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .player-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .player-item:last-child {
+            border-bottom: none;
+        }
+        
+        .player-name {
+            font-weight: bold;
+        }
+        
+        .player-status {
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+        }
+        
+        .status-ready {
+            background: #c8e6c9;
+            color: #2e7d32;
+        }
+        
+        .status-not-ready {
+            background: #ffcdd2;
+            color: #c62828;
+        }
+        
+        .invitation-form {
+            background: #e3f2fd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        
+        .leader-controls {
+            background: #fff3e0;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        
+        footer {
+            text-align: center;
+            color: white;
+            padding: 20px;
+            font-size: 14px;
+        }
+        
+        .answer-positive {
+            color: #2e7d32;
+            font-weight: bold;
+        }
+        
+        .answer-negative {
+            color: #c62828;
+            font-weight: bold;
+        }
+        
+        .answer-uncertain {
+            color: #ff8f00;
+            font-weight: bold;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .ranking-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        .ranking-table th, 
+        .ranking-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .ranking-table th {
+            background-color: #f5f5f5;
+        }
+        
+        .medal-1 {
+            color: #FFD700;
+            font-weight: bold;
+        }
+        
+        .medal-2 {
+            color: #C0C0C0;
+            font-weight: bold;
+        }
+        
+        .medal-3 {
+            color: #CD7F32;
+            font-weight: bold;
+        }
+        
+        .timer {
+            font-size: 18px;
+            font-weight: bold;
+            color: #e53935;
+            text-align: center;
+            margin: 10px 0;
+        }
+        
+        .user-records {
+            background: #fce4ec;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>学科猜词海龟汤</h1>
+            <div class="user-info">
+                <span>用户名：<span id="username">游客</span></span>
+                <span>积分: <span id="score">0</span></span>
+                <button class="btn" id="homeBtn">返回主页</button>
+                <button class="btn" id="logoutBtn">退出登录</button>
+            </div>
+        </header>
+        
+        <div class="game-area">
+            <div class="subjects-panel panel">
+                <h2>房间设置</h2>
+                <div style="margin-bottom: 20px;">
+                    <div class="mode-info">
+                        <h3 id="gameMode">单机模式</h3>
+                        <p>学科: <span id="gameSubject">未选择</span></p>
+                        <p>轮数: <span id="gameRounds">1</span></p>
+                        <p>最多提问: <span id="maxQuestions">20</span>次</p>
+                        <p>每轮时间: <span id="roundTime">1</span>分钟</p>
+                    </div>
+                </div>
+                
+                <div id="soloSubjectPanel">
+                    <h2>选择学科</h2>
+                    <ul class="subject-list">
+                        <li class="subject-item" data-subject="天文">天文</li>
+                        <li class="subject-item" data-subject="历史">历史</li>
+                        <li class="subject-item" data-subject="地理">地理</li>
+                        <li class="subject-item" data-subject="物理">物理</li>
+                        <li class="subject-item" data-subject="化学">化学</li>
+                        <li class="subject-item" data-subject="生物">生物</li>
+                    </ul>
+                </div>
+                
+                <div id="roomPanel" class="hidden">
+                    <h2>房间信息</h2>
+                    <div class="room-info">
+                        <div>
+                            <div>房间ID: <span id="roomId">-</span></div>
+                            <div>房主: <span id="roomOwner">-</span></div>
+                        </div>
+                        <div>
+                            <div>玩家: <span id="playerCount">0</span>/5</div>
+                            <div>状态: <span id="roomStatus">等待中</span></div>
+                        </div>
+                    </div>
+                    
+                    <div class="players-list">
+                        <h3>玩家列表</h3>
+                        <div id="playersList">
+                            <!-- 玩家列表将通过JavaScript动态加载 -->
+                        </div>
+                    </div>
+                    
+                    <div id="invitationPanel" class="invitation-form">
+                        <h3>邀请玩家</h3>
+                        <div class="form-group">
+                            <label for="inviteEmail">通过邮箱或用户名邀请:</label>
+                            <input type="text" id="inviteEmail" placeholder="输入玩家邮箱或用户名">
+                        </div>
+                        <button class="btn" id="inviteBtn">邀请</button>
+                    </div>
+                    
+                    <div id="leaderControls" class="leader-controls hidden">
+                        <h3>房主控制</h3>
+                        <div class="form-group">
+                            <label for="roundsSetting">游戏轮数:</label>
+                            <select id="roundsSetting">
+                                <option value="1">1轮</option>
+                                <option value="2">2轮</option>
+                                <option value="3" selected>3轮</option>
+                                <option value="4">4轮</option>
+                                <option value="5">5轮</option>
+                                <option value="6">6轮</option>
+                                <option value="7">7轮</option>
+                                <option value="8">8轮</option>
+                                <option value="9">9轮</option>
+                                <option value="10">10轮</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="questionsSetting">最多提问次数:</label>
+                            <select id="questionsSetting">
+                                <option value="5">5次</option>
+                                <option value="10">10次</option>
+                                <option value="15">15次</option>
+                                <option value="20" selected>20次</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="timeSetting">每轮时间限制(分钟):</label>
+                            <select id="timeSetting">
+                                <option value="0.5">0.5分钟</option>
+                                <option value="1" selected>1分钟</option>
+                                <option value="1.5">1.5分钟</option>
+                                <option value="2">2分钟</option>
+                                <option value="2.5">2.5分钟</option>
+                                <option value="3">3分钟</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="pvpSubject">游戏学科:</label>
+                            <select id="pvpSubject">
+                                <option value="天文">天文</option>
+                                <option value="历史">历史</option>
+                                <option value="地理">地理</option>
+                                <option value="物理">物理</option>
+                                <option value="化学">化学</option>
+                                <option value="生物">生物</option>
+                            </select>
+                        </div>
+                        <button class="btn" id="startGameBtn">开始游戏</button>
+                        <button class="btn btn-danger" id="closeRoomBtn">关闭房间</button>
+                    </div>
+                </div>
+                
+                <div class="user-records">
+                    <h3>个人最佳记录</h3>
+                    <p>最少提问次数: <span id="minQuestions">-</span> 次</p>
+                    <p>最快猜词时间: <span id="fastestTime">-</span> 秒</p>
+                </div>
+                
+                <div style="margin-top: 30px;">
+                    <h3>游戏说明</h3>
+                    <p>1. 选择一个学科开始游戏</p>
+                    <p>2. 系统会生成一个谜题</p>
+                    <p>3. 通过提问缩小答案范围</p>
+                    <p>4. 最终猜出正确答案</p>
+                    <p>5. 每题可获取一次提示</p>
+                    <p>6. 最多提问20次，超时无分</p>
+                </div>
+            </div>
+            
+            <div class="game-panel panel">
+                <div class="game-header">
+                    <h2 id="subjectTitle">请选择学科开始游戏</h2>
+                    <button class="btn btn-outline" id="hintBtn" disabled>获取提示</button>
+                </div>
+                
+                <div class="error" id="error"></div>
+                <div class="success" id="success"></div>
+                
+                <div class="timer" id="timer">剩余时间: 60 秒</div>
+                
+                <div class="game-info" id="gameInfo" style="display: none;">
+                    <div class="info-item">
+                        <div class="info-label">问题数</div>
+                        <div class="info-value" id="questionsCount">0</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">剩余次数</div>
+                        <div class="info-value" id="remainingAttempts">20</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">当前轮数</div>
+                        <div class="info-value" id="currentRound">1</div>
+                    </div>
+                </div>
+                
+                <div class="game-content">
+                    <div id="gameMessage" class="message">
+                        请选择左侧的学科开始游戏
+                    </div>
+                    
+                    <div id="hintArea" class="hint-area" style="display: none;">
+                        <strong>提示:</strong> <span id="hintText"></span>
+                    </div>
+                    
+                    <div id="history" class="history" style="display: none;">
+                        <h3>问答历史</h3>
+                        <div id="historyList"></div>
+                    </div>
+                    
+                    <div id="questionInput" class="question-input" style="display: none;">
+                        <input type="text" id="question" placeholder="请输入你的问题，例如：是不是行星？">
+                        <button class="btn" id="askBtn">提问</button>
+                    </div>
+                    
+                    <div id="rankingPanel" class="hidden">
+                        <h3>本轮排名</h3>
+                        <table class="ranking-table">
+                            <thead>
+                                <tr>
+                                    <th>排名</th>
+                                    <th>玩家</th>
+                                    <th>提问次数</th>
+                                    <th>用时(秒)</th>
+                                    <th>得分</th>
+                                </tr>
+                            </thead>
+                            <tbody id="roundRanking">
+                                <!-- 排名将通过JavaScript动态加载 -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div id="finalRankingPanel" class="hidden">
+                        <h3>最终排名</h3>
+                        <table class="ranking-table">
+                            <thead>
+                                <tr>
+                                <th>排名</th>
+                                <th>玩家</th>
+                                <th>总得分</th>
+                                </tr>
+                            </thead>
+                            <tbody id="finalRanking">
+                                <!-- 最终排名将通过JavaScript动态加载 -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="controls">
+                        <button class="btn" id="newGameBtn" style="display: none;">新游戏</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>基于通义千问大模型技术 | 学科猜词海龟汤 - Subject Puzzle</p>
+        </footer>
+    </div>
+
+    <script>
+        // 全局变量
+        let currentUser = null;
+        let currentSessionId = null;
+        let currentSubject = null;
+        let questionsCount = 0;
+        let maxQuestions = 20;
+        let currentRound = 1;
+        let totalRounds = 1;
+        let gameMode = 'solo'; // 'solo' or 'pvp'
+        let isRoomOwner = false;
+        let roomId = null;
+        let roundTime = 1; // 每轮时间限制（分钟）
+        let timer = null;
+        let timeLeft = 60; // 剩余时间（秒）
+        let roundStartTime = null;
+        let userRecords = {
+            minQuestions: null,
+            fastestTime: null
+        };
+        
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 检查用户是否已登录
+            const token = localStorage.getItem('token');
+            const user = JSON.parse(localStorage.getItem('user'));
+            
+            if (token && user) {
+                currentUser = user;
+                document.getElementById('username').textContent = user.username;
+                document.getElementById('score').textContent = user.score || 0;
+            } else {
+                // 未登录跳转到登录页面
+                window.location.href = '/login.html';
+                return;
+            }
+            
+            // 解析URL参数
+            const urlParams = new URLSearchParams(window.location.search);
+            gameMode = urlParams.get('mode') || 'solo';
+            const subject = urlParams.get('subject');
+            const roomIdParam = urlParams.get('roomId');
+            totalRounds = parseInt(urlParams.get('rounds')) || 1;
+            maxQuestions = parseInt(urlParams.get('maxQuestions')) || 20;
+            roundTime = parseFloat(urlParams.get('roundTime')) || 1;
+            
+            // 更新UI根据游戏模式
+            updateGameModeUI();
+            
+            // 如果是PVP模式，初始化房间
+            if (gameMode === 'pvp') {
+                initPVPMode(roomIdParam);
+            }
+            
+            // 绑定事件
+            bindEvents();
+            
+            // 如果有学科参数，自动选择
+            if (subject) {
+                selectSubject(subject);
+            }
+            
+            // 加载用户记录
+            loadUserRecords();
+        });
+        
+        // 根据游戏模式更新UI
+        function updateGameModeUI() {
+            document.getElementById('gameMode').textContent = gameMode === 'solo' ? '单机模式' : 'PVP模式';
+            document.getElementById('roundTime').textContent = roundTime;
+            
+            if (gameMode === 'solo') {
+                document.getElementById('soloSubjectPanel').classList.remove('hidden');
+                document.getElementById('roomPanel').classList.add('hidden');
+            } else {
+                document.getElementById('soloSubjectPanel').classList.add('hidden');
+                document.getElementById('roomPanel').classList.remove('hidden');
+                document.getElementById('gameRounds').textContent = totalRounds;
+                document.getElementById('maxQuestions').textContent = maxQuestions;
+            }
+        }
+        
+        // 初始化PVP模式
+        function initPVPMode(roomIdParam) {
+            // 如果有房间ID参数，表示加入现有房间
+            if (roomIdParam) {
+                joinRoom(roomIdParam);
+            } else {
+                // 创建新房间
+                createRoom();
+            }
+        }
+        
+        // 创建PVP房间
+        async function createRoom() {
+            try {
+                const subject = document.getElementById('roomSubject').value;
+                const rounds = parseInt(document.getElementById('rounds').value);
+                const maxQuestions = parseInt(document.getElementById('roomMaxQuestions').value);
+                const timeLimit = parseFloat(document.getElementById('timeLimit').value);
+                
+                if (!subject) {
+                    showError('请选择学科');
+                    return;
+                }
+                
+                // 禁用创建按钮防止重复点击
+                const createRoomBtn = document.getElementById('createRoomBtn');
+                createRoomBtn.disabled = true;
+                createRoomBtn.textContent = '创建中...';
+                
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/game/room/create', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ subject, rounds, maxQuestions, timeLimit })
+                });
+                
+                // 检查响应类型
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    throw new Error(`服务器返回了非JSON响应: ${contentType}`);
+                }
+                
+                // 检查响应状态
+                if (!response.ok) {
+                    // 尝试解析错误响应
+                    try {
+                        const errorData = await response.json();
+                        throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`);
+                    } catch (parseError) {
+                        // 如果无法解析JSON响应，则使用状态文本
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                }
+                
+                const data = await response.json();
+                
+                // 设置当前房间ID
+                currentRoomId = data.roomId;
+                
+                // 显示房间信息
+                document.getElementById('roomIdDisplay').textContent = data.roomId;
+                document.getElementById('roomSubjectDisplay').textContent = subject;
+                document.getElementById('roomRoundsDisplay').textContent = rounds;
+                document.getElementById('roomMaxQuestionsDisplay').textContent = maxQuestions;
+                document.getElementById('roomTimeLimitDisplay').textContent = timeLimit;
+                
+                // 显示房间面板
+                document.getElementById('roomSetup').classList.add('hidden');
+                document.getElementById('roomPanel').classList.remove('hidden');
+                
+                // 初始化玩家列表
+                updatePlayerList(data.players);
+                
+                showSuccess('房间创建成功');
+            } catch (error) {
+                console.error('创建房间失败:', error);
+                showError(`创建房间失败: ${error.message}`);
+                // 恢复创建按钮状态
+                const createRoomBtn = document.getElementById('createRoomBtn');
+                createRoomBtn.disabled = false;
+                createRoomBtn.textContent = '创建房间';
+            }
+        }
+        
+        // 加入PVP房间
+        async function joinRoom() {
+            try {
+                const roomId = document.getElementById('joinRoomId').value.trim();
+                
+                if (!roomId) {
+                    showError('请输入房间ID');
+                    return;
+                }
+                
+                // 禁用加入按钮防止重复点击
+                const joinRoomBtn = document.getElementById('joinRoomBtn');
+                joinRoomBtn.disabled = true;
+                joinRoomBtn.textContent = '加入中...';
+                
+                const token = localStorage.getItem('token');
+                const response = await fetch(`/api/game/room/${roomId}/join`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                // 检查响应类型
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    throw new Error(`服务器返回了非JSON响应: ${contentType}`);
+                }
+                
+                // 检查响应状态
+                if (!response.ok) {
+                    // 尝试解析错误响应
+                    try {
+                        const errorData = await response.json();
+                        throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`);
+                    } catch (parseError) {
+                        // 如果无法解析JSON响应，则使用状态文本
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                }
+                
+                const data = await response.json();
+                
+                // 设置当前房间ID
+                currentRoomId = data.roomId;
+                
+                // 显示房间信息
+                document.getElementById('roomIdDisplay').textContent = data.roomId;
+                document.getElementById('roomSubjectDisplay').textContent = data.subject;
+                document.getElementById('roomRoundsDisplay').textContent = data.rounds;
+                document.getElementById('roomMaxQuestionsDisplay').textContent = data.maxQuestions;
+                document.getElementById('roomTimeLimitDisplay').textContent = data.timeLimit;
+                
+                // 显示房间面板
+                document.getElementById('joinRoomPanel').classList.add('hidden');
+                document.getElementById('roomPanel').classList.remove('hidden');
+                
+                // 初始化玩家列表
+                updatePlayerList(data.players);
+                
+                showSuccess('成功加入房间');
+            } catch (error) {
+                console.error('加入房间失败:', error);
+                showError(`加入房间失败: ${error.message}`);
+                // 恢复加入按钮状态
+                const joinRoomBtn = document.getElementById('joinRoomBtn');
+                joinRoomBtn.disabled = false;
+                joinRoomBtn.textContent = '加入房间';
+            }
+        }
+        
+        // 更新玩家列表
+        function updatePlayersList(players) {
+            const playersList = document.getElementById('playersList');
+            playersList.innerHTML = '';
+            
+            players.forEach(player => {
+                const playerItem = document.createElement('div');
+                playerItem.className = 'player-item';
+                
+                const statusClass = player.isReady ? 'status-ready' : 'status-not-ready';
+                const statusText = player.isReady ? '已准备' : '未准备';
+                
+                playerItem.innerHTML = `
+                    <span class="player-name">${player.username} ${player.isOwner ? '(房主)' : ''}</span>
+                    <span class="player-status ${statusClass}">${statusText}</span>
+                `;
+                
+                playersList.appendChild(playerItem);
+            });
+        }
+        
+        // 绑定事件
+        function bindEvents() {
+            // 学科选择
+            document.querySelectorAll('.subject-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const subject = this.getAttribute('data-subject');
+                    selectSubject(subject);
+                });
+            });
+            
+            // 提问
+            document.getElementById('askBtn').addEventListener('click', askQuestion);
+            document.getElementById('question').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    askQuestion();
+                }
+            });
+            
+            // 获取提示
+            document.getElementById('hintBtn').addEventListener('click', getHint);
+            
+            // 新游戏
+            document.getElementById('newGameBtn').addEventListener('click', function() {
+                if (currentSubject) {
+                    startGame(currentSubject);
+                }
+            });
+            
+            // 退出登录
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                window.location.href = '/login.html';
+            });
+            
+            // 返回主页
+            document.getElementById('homeBtn').addEventListener('click', function() {
+                window.location.href = '/';
+            });
+            
+            // PVP模式相关事件
+            if (gameMode === 'pvp') {
+                // 邀请玩家
+                document.getElementById('inviteBtn').addEventListener('click', invitePlayer);
+                
+                // 房主控制
+                if (isRoomOwner) {
+                    document.getElementById('startGameBtn').addEventListener('click', startPVPGame);
+                    document.getElementById('closeRoomBtn').addEventListener('click', closeRoom);
+                }
+            }
+        }
+        
+        // 邀请玩家
+        function invitePlayer() {
+            const emailOrUsername = document.getElementById('inviteEmail').value.trim();
+            if (!emailOrUsername) {
+                showError('请输入玩家邮箱或用户名');
+                return;
+            }
+            
+            // 在实际应用中，这里会发送邀请请求到服务器
+            showSuccess(`已邀请 ${emailOrUsername} 加入房间`);
+            document.getElementById('inviteEmail').value = '';
+        }
+        
+        // 开始PVP游戏
+        function startPVPGame() {
+            totalRounds = parseInt(document.getElementById('roundsSetting').value);
+            maxQuestions = parseInt(document.getElementById('questionsSetting').value);
+            roundTime = parseFloat(document.getElementById('timeSetting').value);
+            currentSubject = document.getElementById('pvpSubject').value;
+            
+            document.getElementById('gameRounds').textContent = totalRounds;
+            document.getElementById('maxQuestions').textContent = maxQuestions;
+            document.getElementById('roundTime').textContent = roundTime;
+            document.getElementById('gameSubject').textContent = currentSubject;
+            
+            // 在实际应用中，这里会通知所有玩家游戏开始
+            document.getElementById('roomStatus').textContent = '游戏中';
+            showSuccess('游戏开始！');
+            
+            // 开始第一轮游戏
+            startGame(currentSubject);
+        }
+        
+        // 关闭房间
+        function closeRoom() {
+            if (confirm('确定要关闭房间吗？所有玩家将被踢出。')) {
+                // 在实际应用中，这里会发送关闭房间请求到服务器
+                showSuccess('房间已关闭');
+                // 返回首页
+                setTimeout(() => {
+                    window.location.href = '/';
+                }, 1000);
+            }
+        }
+        
+        // 选择学科
+        function selectSubject(subject) {
+            // 更新UI
+            document.querySelectorAll('.subject-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // 找到对应的学科项并激活
+            document.querySelectorAll('.subject-item').forEach(item => {
+                if (item.getAttribute('data-subject') === subject) {
+                    item.classList.add('active');
+                }
+            });
+            
+            currentSubject = subject;
+            document.getElementById('gameSubject').textContent = subject;
+            document.getElementById('subjectTitle').textContent = subject + '猜谜';
+            startGame(subject);
+        }
+        
+        // 开始游戏
+        async function startGame(subject) {
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/game/start', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ subject, maxQuestions, rounds: totalRounds })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    currentSessionId = data.sessionId;
+                    questionsCount = 0;
+                    gameAnswer = ""; // 重置答案
+                    roundStartTime = new Date(); // 记录开始时间
+                    
+                    // 更新UI
+                    document.getElementById('gameMessage').textContent = data.message;
+                    document.getElementById('questionInput').style.display = 'flex';
+                    document.getElementById('history').style.display = 'block';
+                    document.getElementById('historyList').innerHTML = '';
+                    document.getElementById('hintBtn').disabled = false;
+                    document.getElementById('newGameBtn').style.display = 'inline-block';
+                    document.getElementById('hintArea').style.display = 'none';
+                    document.getElementById('gameInfo').style.display = 'flex';
+                    document.getElementById('questionsCount').textContent = questionsCount;
+                    document.getElementById('remainingAttempts').textContent = maxQuestions - questionsCount;
+                    document.getElementById('currentRound').textContent = currentRound;
+                    
+                    // 隐藏排名面板
+                    document.getElementById('rankingPanel').classList.add('hidden');
+                    document.getElementById('finalRankingPanel').classList.add('hidden');
+                    
+                    // 启动计时器
+                    startTimer();
+                } else {
+                    showError(data.message || '开始游戏失败');
+                }
+            } catch (error) {
+                showError('网络错误，请稍后重试');
+            }
+        }
+        
+        // 启动计时器
+        function startTimer() {
+            // 清除之前的计时器
+            if (timer) {
+                clearInterval(timer);
+            }
+            
+            // 设置时间限制（转换为秒）
+            timeLeft = Math.floor(roundTime * 60);
+            updateTimerDisplay();
+            
+            // 启动计时器
+            timer = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    timer = null;
+                    timeUp();
+                }
+            }, 1000);
+        }
+        
+        // 更新计时器显示
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            document.getElementById('timer').textContent = `剩余时间: ${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+        }
+        
+        // 时间到
+        function timeUp() {
+            showError(`时间到！未能在限定时间内猜出答案`);
+            // 禁用输入
+            document.getElementById('questionInput').style.display = 'none';
+            document.getElementById('hintBtn').disabled = true;
+            
+            // 显示本轮排名
+            const timeElapsed = ((new Date() - roundStartTime) / 1000).toFixed(1);
+            showRoundRanking([{username: currentUser.username, questions: questionsCount, time: timeElapsed, score: 0}]);
+        }
+        
+        // 提问
+        async function askQuestion() {
+            const question = document.getElementById('question').value.trim();
+            if (!question) {
+                showError('请输入问题');
+                return;
+            }
+            
+            if (!currentSessionId) {
+                showError('请先开始游戏');
+                return;
+            }
+            
+            try {
+                const token = localStorage.getItem('token');
+                const response = await fetch(`/api/game/ask/${currentSessionId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ question })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    questionsCount++;
+                    
+                    // 添加到历史记录
+                    addToHistory(question, data.answer);
+                    
+                    // 清空输入框
+                    document.getElementById('question').value = '';
+                    
+                    // 更新游戏信息
+                    document.getElementById('questionsCount').textContent = questionsCount;
+                    document.getElementById('remainingAttempts').textContent = maxQuestions - questionsCount;
+                    
+                    // 检查游戏是否结束
+                    if (data.isCompleted) {
+                        // 停止计时器
+                        if (timer) {
+                            clearInterval(timer);
+                            timer = null;
+                        }
+                        
+                        const timeElapsed = ((new Date() - roundStartTime) / 1000).toFixed(1);
+                        
+                        if (data.isWon) {
+                            // 计算得分 (基于问题数量，最多20次提问)
+                            const score = Math.max(100 - Math.floor((questionsCount-1) * 100 / maxQuestions), 10);
+                            
+                            showSuccess(`恭喜你答对了！获得 ${score} 分`);
+                            // 更新用户积分
+                            currentUser.score = (currentUser.score || 0) + score;
+                            document.getElementById('score').textContent = currentUser.score;
+                            localStorage.setItem('user', JSON.stringify(currentUser));
+                            
+                            // 更新用户记录
+                            updateUserRecords(questionsCount, timeElapsed);
+                            
+                            // 显示本轮排名
+                            showRoundRanking([{username: currentUser.username, questions: questionsCount, time: timeElapsed, score: score}]);
+                        } else {
+                            showError('游戏结束，未能在限定次数内猜出答案');
+                            // 显示本轮排名
+                            showRoundRanking([{username: currentUser.username, questions: questionsCount, time: timeElapsed, score: 0}]);
+                        }
+                        // 禁用输入
+                        document.getElementById('questionInput').style.display = 'none';
+                        document.getElementById('hintBtn').disabled = true;
+                        
+                        // 检查是否需要进入下一轮
+                        if (gameMode === 'pvp' && currentRound < totalRounds) {
+                            setTimeout(() => {
+                                if (confirm(`第${currentRound}轮结束，点击确定进入第${currentRound+1}轮`)) {
+                                    currentRound++;
+                                    startGame(currentSubject);
+                                }
+                            }, 2000);
+                        } else if (gameMode === 'pvp' && currentRound >= totalRounds) {
+                            // 显示最终排名
+                            showFinalRanking();
+                        }
+                    }
+                } else {
+                    showError(data.message || '提问失败');
+                }
+            } catch (error) {
+                showError('网络错误，请稍后重试');
+            }
+        }
+        
+        // 提交问题
+        async function submitQuestion() {
+            const questionInput = document.getElementById('question');
+            const question = questionInput.value.trim();
+            
+            if (!question) {
+                showError('请输入问题');
+                return;
+            }
+            
+            if (!currentSessionId) {
+                showError('请先开始游戏');
+                return;
+            }
+            
+            try {
+                // 禁用提交按钮防止重复提交
+                const submitBtn = document.getElementById('submitBtn');
+                submitBtn.disabled = true;
+                submitBtn.textContent = '提交中...';
+                
+                const token = localStorage.getItem('token');
+                const response = await fetch(`/api/game/ask/${currentSessionId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ question })
+                });
+                
+                // 检查响应类型
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    throw new Error(`服务器返回了非JSON响应: ${contentType}`);
+                }
+                
+                // 检查响应状态
+                if (!response.ok) {
+                    // 尝试解析错误响应
+                    try {
+                        const errorData = await response.json();
+                        throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`);
+                    } catch (parseError) {
+                        // 如果无法解析JSON响应，则使用状态文本
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                }
+                
+                const data = await response.json();
+                
+                // 添加到历史记录
+                addToHistory(question, data.answer);
+                
+                // 清空输入框
+                questionInput.value = '';
+                
+                // 更新问题计数
+                document.getElementById('questionsCount').textContent = data.questionsCount;
+                
+                // 检查游戏是否结束
+                if (data.isCompleted) {
+                    if (data.isWon) {
+                        showSuccess(`恭喜你答对了！得分: ${data.score}分`);
+                        currentUser.score += data.score;
+                        document.getElementById('userScore').textContent = currentUser.score;
+                        
+                        // 更新用户记录
+                        updateFastestTimeRecord();
+                    } else {
+                        showError('很遗憾，你没有在规定次数内猜出答案');
+                    }
+                    // 禁用输入
+                    questionInput.disabled = true;
+                    submitBtn.disabled = true;
+                }
+            } catch (error) {
+                console.error('提问失败:', error);
+                showError(`网络错误: ${error.message}`);
+            } finally {
+                // 恢复提交按钮状态
+                const submitBtn = document.getElementById('submitBtn');
+                submitBtn.disabled = false;
+                submitBtn.textContent = '提交';
+            }
+        }
+        
+        // 更新用户记录
+        function updateUserRecords(questions, time) {
+            let needUpdate = false;
+            const token = localStorage.getItem('token');
+            
+            // 检查是否是新的最少提问次数记录
+            if (userRecords.minQuestions === null || questions < userRecords.minQuestions) {
+                userRecords.minQuestions = questions;
+                needUpdate = true;
+            }
+            
+            // 检查是否是新的最快时间记录
+            if (userRecords.fastestTime === null || parseFloat(time) < userRecords.fastestTime) {
+                userRecords.fastestTime = parseFloat(time);
+                needUpdate = true;
+            }
+            
+            if (needUpdate) {
+                // 保存到服务器
+                Promise.all([
+                    // 更新最快时间记录
+                    new Promise((resolve, reject) => {
+                        if (userRecords.fastestTime === parseFloat(time)) {
+                            fetch('/api/game/user/records/time', {
+                                method: 'PUT',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'Authorization': `Bearer ${token}`
+                                },
+                                body: JSON.stringify({ time: parseFloat(time) })
+                            })
+                            .then(response => {
+                                if (response.ok) {
+                                    return response.json();
+                                } else {
+                                    throw new Error('更新时间记录失败');
+                                }
+                            })
+                            .then(data => {
+                                resolve();
+                            })
+                            .catch(error => {
+                                console.error('更新时间记录失败:', error);
+                                reject();
+                            });
+                        } else {
+                            resolve();
+                        }
+                    })
+                ])
+                .then(() => {
+                    // 同时保存到本地存储作为备份
+                    localStorage.setItem(`userRecords_${currentUser.userId}`, JSON.stringify(userRecords));
+                    displayUserRecords();
+                    showSuccess('恭喜！创造了新的个人记录！');
+                })
+                .catch(error => {
+                    console.error('更新记录失败:', error);
+                    // 即使服务器更新失败，也更新本地存储
+                    localStorage.setItem(`userRecords_${currentUser.userId}`, JSON.stringify(userRecords));
+                    displayUserRecords();
+                    showSuccess('恭喜！创造了新的个人记录！');
+                });
+            }
+        }
+        
+        // 加载用户记录
+        function loadUserRecords() {
+            const token = localStorage.getItem('token');
+            
+            // 首先尝试从服务器获取记录
+            fetch('/api/game/user/records', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            .then(response => {
+                // 检查响应类型
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    throw new Error(`服务器返回了非JSON响应: ${contentType}`);
+                }
+                
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    // 尝试解析错误响应
+                    return response.json().then(errorData => {
+                        throw new Error(errorData.message || '获取记录失败');
+                    }).catch(() => {
+                        // 如果无法解析JSON，则抛出状态文本错误
+                        throw new Error(`获取记录失败: ${response.status} ${response.statusText}`);
+                    });
+                }
+            })
+            .then(data => {
+                userRecords.minQuestions = data.minQuestions;
+                userRecords.fastestTime = data.fastestTime;
+                displayUserRecords();
+            })
+            .catch(error => {
+                console.error('获取用户记录失败:', error);
+                showError(`获取用户记录失败: ${error.message}`);
+                // 如果服务器获取失败，从本地存储获取
+                const localRecords = localStorage.getItem(`userRecords_${currentUser.userId}`);
+                if (localRecords) {
+                    userRecords = JSON.parse(localRecords);
+                }
+                displayUserRecords();
+            });
+        }
+        
+        // 显示用户记录
+        function displayUserRecords() {
+            document.getElementById('minQuestions').textContent = userRecords.minQuestions !== null ? userRecords.minQuestions : '-';
+            document.getElementById('fastestTime').textContent = userRecords.fastestTime !== null ? userRecords.fastestTime + ' 秒' : '-';
+        }
+        
+        // 显示本轮排名
+        function showRoundRanking(players) {
+            const roundRanking = document.getElementById('roundRanking');
+            roundRanking.innerHTML = '';
+            
+            // 按提问次数排序（少的排前面）
+            players.sort((a, b) => a.questions - b.questions);
+            
+            players.forEach((player, index) => {
+                const row = document.createElement('tr');
+                const medalClass = index === 0 ? 'medal-1' : index === 1 ? 'medal-2' : index === 2 ? 'medal-3' : '';
+                const medalText = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : (index + 1);
+                
+                row.innerHTML = `
+                    <td class="${medalClass}">${medalText}</td>
+                    <td>${player.username}</td>
+                    <td>${player.questions} 次</td>
+                    <td>${player.time} 秒</td>
+                    <td>${player.score} 分</td>
+                `;
+                roundRanking.appendChild(row);
+            });
+            
+            document.getElementById('rankingPanel').classList.remove('hidden');
+        }
+        
+        // 显示最终排名
+        function showFinalRanking() {
+            // 在实际应用中，这里会汇总所有轮次的得分
+            const players = [{
+                username: currentUser.username,
+                totalScore: currentUser.score || 0
+            }];
+            
+            const finalRanking = document.getElementById('finalRanking');
+            finalRanking.innerHTML = '';
+            
+            // 按总分排序（高的排前面）
+            players.sort((a, b) => b.totalScore - a.totalScore);
+            
+            players.forEach((player, index) => {
+                const row = document.createElement('tr');
+                const medalClass = index === 0 ? 'medal-1' : index === 1 ? 'medal-2' : index === 2 ? 'medal-3' : '';
+                const medalText = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : (index + 1);
+                
+                row.innerHTML = `
+                    <td class="${medalClass}">${medalText}</td>
+                    <td>${player.username}</td>
+                    <td>${player.totalScore} 分</td>
+                `;
+                finalRanking.appendChild(row);
+            });
+            
+            document.getElementById('finalRankingPanel').classList.remove('hidden');
+        }
+        
+        // 获取提示
+        async function getHint() {
+            if (!currentSessionId) {
+                showError('请先开始游戏');
+                return;
+            }
+            
+            try {
+                const hintBtn = document.getElementById('hintBtn');
+                hintBtn.disabled = true;
+                hintBtn.textContent = '获取中...';
+                
+                const token = localStorage.getItem('token');
+                const response = await fetch(`/api/game/hint/${currentSessionId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                // 检查响应类型
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    throw new Error(`服务器返回了非JSON响应: ${contentType}`);
+                }
+                
+                // 检查响应状态
+                if (!response.ok) {
+                    // 尝试解析错误响应
+                    try {
+                        const errorData = await response.json();
+                        throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`);
+                    } catch (parseError) {
+                        // 如果无法解析JSON响应，则使用状态文本
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                }
+                
+                const data = await response.json();
+                
+                // 显示提示
+                document.getElementById('hintArea').style.display = 'block';
+                document.getElementById('hintText').textContent = data.hint;
+                document.getElementById('hintBtn').disabled = true;
+                document.getElementById('hintBtn').textContent = '获取提示';
+            } catch (error) {
+                console.error('获取提示失败:', error);
+                showError(`获取提示失败: ${error.message}`);
+                // 恢复按钮状态
+                const hintBtn = document.getElementById('hintBtn');
+                hintBtn.disabled = false;
+                hintBtn.textContent = '获取提示';
+            }
+        }
+        
+        // 添加到历史记录
+        function addToHistory(question, answer) {
+            const historyList = document.getElementById('historyList');
+            const historyItem = document.createElement('div');
+            historyItem.className = 'history-item';
+            
+            // 根据答案类型设置样式
+            let answerClass = '';
+            if (answer === '是') {
+                answerClass = 'answer-positive';
+            } else if (answer === '不是') {
+                answerClass = 'answer-negative';
+            } else if (['可能是', '不确定', '部分正确'].includes(answer)) {
+                answerClass = 'answer-uncertain';
+            } else if (answer === '恭喜你，答对了！') {
+                answerClass = 'answer-positive';
+            }
+            
+            historyItem.innerHTML = `
+                <div class="question-text">问: ${question}</div>
+                <div class="answer-text">答: <span class="${answerClass}">${answer}</span></div>
+            `;
+            historyList.appendChild(historyItem);
+            
+            // 确保在下次渲染后滚动到底部
+            setTimeout(() => {
+                historyList.scrollTop = historyList.scrollHeight;
+            }, 0);
+        }
+        
+        // 显示错误信息
+        function showError(message) {
+            const errorElement = document.getElementById('error');
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+            
+            setTimeout(() => {
+                errorElement.style.display = 'none';
+            }, 3000);
+        }
+        
+        // 显示成功信息
+        function showSuccess(message) {
+            const successElement = document.getElementById('success');
+            successElement.textContent = message;
+            successElement.style.display = 'block';
+            
+            setTimeout(() => {
+                successElement.style.display = 'none';
+            }, 3000);
+        }
+        
+        // 开始新游戏
+        async function startNewGame() {
+            try {
+                const subject = document.getElementById('subject').value;
+                const maxQuestions = parseInt(document.getElementById('maxQuestions').value);
+                
+                if (!subject) {
+                    showError('请选择学科');
+                    return;
+                }
+                
+                // 禁用开始按钮防止重复点击
+                const startBtn = document.getElementById('startBtn');
+                startBtn.disabled = true;
+                startBtn.textContent = '创建中...';
+                
+                const token = localStorage.getItem('token');
+                const response = await fetch('/api/game/start', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ subject, maxQuestions })
+                });
+                
+                // 检查响应类型
+                const contentType = response.headers.get('content-type');
+                if (!contentType || !contentType.includes('application/json')) {
+                    throw new Error(`服务器返回了非JSON响应: ${contentType}`);
+                }
+                
+                // 检查响应状态
+                if (!response.ok) {
+                    // 尝试解析错误响应
+                    try {
+                        const errorData = await response.json();
+                        throw new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`);
+                    } catch (parseError) {
+                        // 如果无法解析JSON响应，则使用状态文本
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                }
+                
+                const data = await response.json();
+                
+                // 设置当前会话ID
+                currentSessionId = data.sessionId;
+                
+                // 显示游戏界面
+                document.getElementById('gameSetup').classList.add('hidden');
+                document.getElementById('gameArea').classList.remove('hidden');
+                
+                // 显示游戏信息
+                document.getElementById('currentSubject').textContent = data.subject;
+                document.getElementById('maxQuestions').textContent = maxQuestions;
+                document.getElementById('questionsCount').textContent = '0';
+                
+                // 清空历史记录
+                document.getElementById('historyList').innerHTML = '';
+                
+                // 隐藏提示区域
+                document.getElementById('hintArea').style.display = 'none';
+                
+                // 启用输入框和按钮
+                document.getElementById('question').disabled = false;
+                document.getElementById('submitBtn').disabled = false;
+                document.getElementById('hintBtn').disabled = false;
+                
+                // 开始计时
+                startTimer();
+                
+                showSuccess(data.message);
+            } catch (error) {
+                console.error('开始游戏失败:', error);
+                showError(`开始游戏失败: ${error.message}`);
+                // 恢复开始按钮状态
+                const startBtn = document.getElementById('startBtn');
+                startBtn.disabled = false;
+                startBtn.textContent = '开始游戏';
+            }
+        }
+        
+        // 退出登录
+        function logout() {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+            // 跳转到首页
+            window.location.href = '/';
+        }
+    </script>
+</body>
+</html>

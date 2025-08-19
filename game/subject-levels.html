@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学科海龟汤 - 关卡选择</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            color: white;
+        }
+
+        .subject-name {
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .user-account {
+            font-size: 18px;
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 20px;
+        }
+
+        .main-content {
+            text-align: center;
+            padding: 50px 20px;
+            min-height: calc(100vh - 140px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .page-title {
+            font-size: 48px;
+            color: white;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            margin-bottom: 50px;
+            font-weight: bold;
+        }
+
+        .path-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            margin: 50px 0;
+        }
+
+        .path {
+            width: 80%;
+            height: 20px;
+            background: linear-gradient(to right, #8B4513, #D2691E);
+            border-radius: 10px;
+            position: relative;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .path::before {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: repeating-linear-gradient(
+                to right,
+                transparent,
+                transparent 20px,
+                white 20px,
+                white 40px
+            );
+            transform: translateY(-50%);
+        }
+
+        .level {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            z-index: 2;
+        }
+
+        .level:hover {
+            transform: translateY(-10px) scale(1.1);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .level-1 {
+            left: 20%;
+            background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+            transform: translateX(-50%);
+        }
+
+        .level-2 {
+            left: 50%;
+            background: linear-gradient(45deg, #4ECDC4, #556270);
+            transform: translateX(-50%);
+        }
+
+        .level-3 {
+            left: 80%;
+            background: linear-gradient(45deg, #45B7D1, #96C93D);
+            transform: translateX(-50%);
+        }
+
+        .back-button {
+            position: fixed;
+            left: 20px;
+            bottom: 20px;
+            padding: 15px 30px;
+            font-size: 20px;
+            background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .back-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px 20px;
+            }
+            
+            .subject-name {
+                font-size: 20px;
+            }
+            
+            .user-account {
+                font-size: 16px;
+                padding: 8px 15px;
+            }
+            
+            .main-content {
+                padding: 30px 10px;
+                min-height: calc(100vh - 120px);
+            }
+            
+            .page-title {
+                font-size: 36px;
+                margin-bottom: 30px;
+            }
+            
+            .path {
+                width: 90%;
+                height: 15px;
+            }
+            
+            .level {
+                width: 80px;
+                height: 80px;
+                font-size: 20px;
+            }
+            
+            .finish {
+                right: -60px;
+                width: 100px;
+                height: 100px;
+                font-size: 50px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-title {
+                font-size: 28px;
+                margin-bottom: 20px;
+            }
+            
+            .path {
+                width: 95%;
+                height: 12px;
+            }
+            
+            .level {
+                width: 70px;
+                height: 70px;
+                font-size: 18px;
+            }
+            
+            .level-1 {
+                left: 20%;
+            }
+            
+            .level-2 {
+                left: 50%;
+            }
+            
+            .level-3 {
+                left: 80%;
+            }
+            
+            .footer {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="subject-name" onclick="goBack()">化学</div>
+        <div class="user-account" id="usernameDisplay">游客</div>
+    </div>
+
+    <div class="main-content">
+        <h1 class="page-title">关卡选择</h1>
+        
+        <div class="path-container">
+            <div class="path"></div>
+            <div class="level level-1" onclick="startLevel(1)">关卡 1</div>
+            <div class="level level-2" onclick="startLevel(2)">关卡 2</div>
+            <div class="level level-3" onclick="startLevel(3)">关卡 3</div>
+            <div class="finish">🏆</div>
+        </div>
+    </div>
+
+    <button class="back-button" onclick="goBack()">返回</button>
+
+    <div class="footer">
+        <p>学科海龟汤游戏 © 2025</p>
+    </div>
+
+    <script>
+        function goBack() {
+            window.location.href = 'single-player.html';
+        }
+
+        function startLevel(level) {
+            // 获取当前学科
+            const urlParams = new URLSearchParams(window.location.search);
+            const subject = urlParams.get('subject') || 'chemistry';
+            
+            // 跳转到闯关页面，并传递学科和关卡参数
+            window.location.href = 'level.html?subject=' + subject + '&level=' + level;
+        }
+
+        // 页面加载时根据URL参数设置学科名称
+        window.onload = function() {
+            // 检查用户登录状态
+            checkLoginStatus();
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            const subject = urlParams.get('subject');
+            if (subject) {
+                const subjectNames = {
+                    'biology': '生物',
+                    'physics': '物理',
+                    'geography': '地理',
+                    'chemistry': '化学',
+                    'history': '历史',
+                    'astronomy': '天文'
+                };
+                document.querySelector('.subject-name').textContent = subjectNames[subject] || '学科';
+                // 更新返回按钮的链接
+                document.querySelector('.subject-name').onclick = function() {
+                    window.location.href = 'single-player.html';
+                };
+            }
+        }
+        
+        // 检查用户登录状态并更新显示
+        function checkLoginStatus() {
+            const user = localStorage.getItem('user');
+            const usernameDisplay = document.getElementById('usernameDisplay');
+            
+            if (user) {
+                const userData = JSON.parse(user);
+                usernameDisplay.textContent = userData.username;
+            } else {
+                usernameDisplay.textContent = '游客';
+            }
+        }
+    </script>
+</body>
+</html>

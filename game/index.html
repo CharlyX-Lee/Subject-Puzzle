@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学科海龟汤</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            color: white;
+        }
+
+        .welcome {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .user-info {
+            display: flex;
+            gap: 15px;
+        }
+
+        .user-account {
+            font-size: 18px;
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .auth-button {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+
+        .auth-button:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .logout-button {
+            background-color: rgba(255, 0, 0, 0.2);
+        }
+
+        .logout-button:hover {
+            background-color: rgba(255, 0, 0, 0.3);
+        }
+
+        .main-content {
+            text-align: center;
+            padding-top: 100px;
+        }
+
+        .game-title {
+            font-size: 96px;
+            color: white;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .game-subtitle {
+            font-size: 48px;
+            color: #FFD700;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            margin-bottom: 80px;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+        }
+
+        .game-button {
+            padding: 20px 40px;
+            font-size: 24px;
+            font-weight: bold;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .game-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        .rules-button {
+            background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+            color: white;
+        }
+
+        .single-player-button {
+            background: linear-gradient(45deg, #4ECDC4, #556270);
+            color: white;
+        }
+
+        .multiplayer-button {
+            background: linear-gradient(45deg, #45B7D1, #96C93D);
+            color: white;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="welcome">欢迎进入</div>
+        <div class="user-info">
+            <div class="user-account" id="userInfo">
+                <span>用户：</span>
+                <span id="usernameDisplay">游客</span>
+            </div>
+            <div class="auth-buttons" id="authButtons">
+                <button class="auth-button" id="loginButton">登录</button>
+                <button class="auth-button" id="registerButton">注册</button>
+                <button class="auth-button logout-button" id="logoutButton" style="display: none;">退出</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <h1 class="game-title">Subject Puzzle</h1>
+        <h2 class="game-subtitle">学科海龟汤</h2>
+        
+        <div class="buttons">
+            <button class="game-button rules-button">游戏规则</button>
+            <button class="game-button single-player-button" onclick="goToSinglePlayer()">单人模式</button>
+            <button class="game-button multiplayer-button">多人模式</button>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>学科海龟汤游戏 © 2025</p>
+    </div>
+
+    <script>
+        // 页面加载时检查用户登录状态
+        document.addEventListener('DOMContentLoaded', function() {
+            checkLoginStatus();
+            
+            // 为按钮添加点击事件
+            document.querySelector('.rules-button').addEventListener('click', function() {
+                window.location.href = 'rules.html';
+            });
+
+            document.querySelector('.single-player-button').addEventListener('click', function() {
+                window.location.href = 'single-player.html';
+            });
+            
+            document.querySelector('.multiplayer-button').addEventListener('click', function() {
+                window.location.href = 'multiplayer.html';
+            });
+            
+            // 登录按钮事件
+            document.getElementById('loginButton').addEventListener('click', function() {
+                window.location.href = 'login.html';
+            });
+            
+            // 注册按钮事件
+            document.getElementById('registerButton').addEventListener('click', function() {
+                window.location.href = 'register.html';
+            });
+            
+            // 退出按钮事件
+            document.getElementById('logoutButton').addEventListener('click', function() {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                checkLoginStatus();
+                window.location.reload();
+            });
+        });
+        
+        // 检查用户登录状态
+        function checkLoginStatus() {
+            const user = localStorage.getItem('user');
+            const token = localStorage.getItem('token');
+            
+            const usernameDisplay = document.getElementById('usernameDisplay');
+            const loginButton = document.getElementById('loginButton');
+            const registerButton = document.getElementById('registerButton');
+            const logoutButton = document.getElementById('logoutButton');
+            
+            if (user && token) {
+                const userData = JSON.parse(user);
+                usernameDisplay.textContent = userData.username;
+                loginButton.style.display = 'none';
+                registerButton.style.display = 'none';
+                logoutButton.style.display = 'block';
+            } else {
+                usernameDisplay.textContent = '游客';
+                loginButton.style.display = 'block';
+                registerButton.style.display = 'block';
+                logoutButton.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

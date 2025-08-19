@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学科海龟汤 - 闯关</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            color: white;
+        }
+
+        .level-info {
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .user-account {
+            font-size: 18px;
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 20px;
+        }
+
+        .main-content {
+            text-align: center;
+            padding: 50px 20px;
+            min-height: calc(100vh - 140px);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .soup-title {
+            font-size: 36px;
+            color: white;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        .interaction-area {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px auto;
+            width: 80%;
+            min-height: 400px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .interaction-area h2 {
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .question-area {
+            flex: 1;
+            padding: 20px;
+            background: #f0f0f0;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            min-height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #333;
+        }
+
+        .answer-area {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .answer-input {
+            flex: 1;
+            padding: 15px;
+            font-size: 18px;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+        }
+
+        .submit-button {
+            padding: 15px 30px;
+            font-size: 20px;
+            background: linear-gradient(45deg, #45B7D1, #96C93D);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .submit-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .back-button {
+            position: fixed;
+            left: 20px;
+            bottom: 20px;
+            padding: 15px 30px;
+            font-size: 20px;
+            background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .back-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px 20px;
+            }
+            
+            .level-info {
+                font-size: 20px;
+            }
+            
+            .user-account {
+                font-size: 16px;
+                padding: 8px 15px;
+            }
+            
+            .main-content {
+                padding: 30px 10px;
+                min-height: calc(100vh - 120px);
+            }
+            
+            .soup-title {
+                font-size: 28px;
+                margin-bottom: 20px;
+            }
+            
+            .interaction-area {
+                width: 90%;
+                padding: 20px;
+                min-height: 300px;
+            }
+            
+            .question-area {
+                min-height: 150px;
+                font-size: 20px;
+            }
+            
+            .answer-input {
+                padding: 12px;
+                font-size: 16px;
+            }
+            
+            .submit-button {
+                padding: 12px 25px;
+                font-size: 18px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .level-info {
+                font-size: 18px;
+            }
+            
+            .soup-title {
+                font-size: 24px;
+            }
+            
+            .interaction-area {
+                width: 95%;
+                min-height: 250px;
+            }
+            
+            .question-area {
+                min-height: 120px;
+                font-size: 18px;
+            }
+            
+            .answer-area {
+                flex-direction: column;
+            }
+            
+            .answer-input {
+                width: 100%;
+            }
+            
+            .submit-button {
+                width: 100%;
+            }
+            
+            .footer {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="level-info" onclick="goBack()">化学-关卡1</div>
+        <div class="user-account">用户账号</div>
+    </div>
+
+    <div class="main-content">
+        <h1 class="soup-title">汤面：</h1>
+        
+        <div class="interaction-area">
+            <h2>问题区域</h2>
+            <div class="question-area">
+                这里是海龟汤的问题描述区域，后期会与后端结合显示具体问题
+            </div>
+            
+            <div class="answer-area">
+                <input type="text" class="answer-input" placeholder="请输入你的答案...">
+                <button class="submit-button">提交答案</button>
+            </div>
+        </div>
+    </div>
+
+    <button class="back-button" onclick="goBack()">返回</button>
+
+    <div class="footer">
+        <p>学科海龟汤游戏 © 2025</p>
+    </div>
+
+    <script>
+        function goBack() {
+            // 根据当前关卡返回到对应的学科关卡页面
+            const urlParams = new URLSearchParams(window.location.search);
+            const subject = urlParams.get('subject') || 'chemistry';
+            window.location.href = 'subject-levels.html?subject=' + subject;
+        }
+
+        // 页面加载时根据URL参数设置学科和关卡信息
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const subject = urlParams.get('subject');
+            const level = urlParams.get('level') || '1';
+            
+            if (subject) {
+                const subjectNames = {
+                    'biology': '生物',
+                    'physics': '物理',
+                    'geography': '地理',
+                    'chemistry': '化学',
+                    'history': '历史',
+                    'astronomy': '天文'
+                };
+                
+                const subjectName = subjectNames[subject] || '学科';
+                document.querySelector('.level-info').textContent = subjectName + '-关卡' + level;
+            }
+        }
+
+        // 提交答案按钮事件
+        document.querySelector('.submit-button').addEventListener('click', function() {
+            const answer = document.querySelector('.answer-input').value;
+            if (answer.trim() === '') {
+                alert('请输入答案');
+            } else {
+                alert('提交答案：' + answer + '\n（此处后期会与后端交互）');
+            }
+        });
+    </script>
+</body>
+</html>

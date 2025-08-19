@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学科海龟汤 - 单人模式</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            color: white;
+        }
+
+        .welcome {
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .user-account {
+            font-size: 18px;
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 20px;
+        }
+
+        .main-content {
+            text-align: center;
+            padding: 100px 20px 100px;
+            min-height: calc(100vh - 140px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .page-title {
+            font-size: 48px;
+            color: white;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            margin-bottom: 80px;
+            font-weight: bold;
+        }
+
+        .subjects {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .subject-button {
+            width: 250px;
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: bold;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            color: white;
+        }
+
+        .subject-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        .biology {
+            background: linear-gradient(45deg, #50C878, #3EB489);
+        }
+
+        .physics {
+            background: linear-gradient(45deg, #7B68EE, #9370DB);
+        }
+
+        .geography {
+            background: linear-gradient(45deg, #CD853F, #DAA520);
+        }
+
+        .chemistry {
+            background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+        }
+
+        .history {
+            background: linear-gradient(45deg, #45B7D1, #3498DB);
+        }
+
+        .astronomy {
+            background: linear-gradient(45deg, #2C3E50, #4C669F);
+        }
+
+        .back-button {
+            position: fixed;
+            left: 20px;
+            bottom: 20px;
+            padding: 15px 30px;
+            font-size: 20px;
+            background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .back-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px 20px;
+            }
+            
+            .welcome {
+                font-size: 20px;
+            }
+            
+            .user-account {
+                font-size: 16px;
+                padding: 8px 15px;
+            }
+            
+            .main-content {
+                padding: 60px 10px 80px;
+                min-height: calc(100vh - 120px);
+            }
+            
+            .page-title {
+                font-size: 36px;
+                margin-bottom: 40px;
+            }
+            
+            .subjects {
+                gap: 20px;
+                padding: 0 10px;
+            }
+            
+            .subject-button {
+                width: 150px;
+                height: 100px;
+                font-size: 24px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-title {
+                font-size: 28px;
+                margin-bottom: 30px;
+            }
+            
+            .subjects {
+                gap: 15px;
+            }
+            
+            .subject-button {
+                width: 130px;
+                height: 90px;
+                font-size: 20px;
+            }
+            
+            .footer {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="welcome" onclick="goToHome()">学科海龟汤</div>
+        <div class="user-account" id="usernameDisplay">游客</div>
+    </div>
+
+    <div class="main-content">
+        <h1 class="page-title">请选择学科</h1>
+        
+        <div class="subjects">
+            <button class="subject-button biology" onclick="selectSubject('biology')">生物</button>
+            <button class="subject-button physics" onclick="selectSubject('physics')">物理</button>
+            <button class="subject-button geography" onclick="selectSubject('geography')">地理</button>
+            <button class="subject-button chemistry" onclick="selectSubject('chemistry')">化学</button>
+            <button class="subject-button history" onclick="selectSubject('history')">历史</button>
+            <button class="subject-button astronomy" onclick="selectSubject('astronomy')">天文</button>
+        </div>
+    </div>
+
+    <button class="back-button" onclick="goToHome()">返回主页</button>
+
+    <div class="footer">
+        <p>学科海龟汤游戏 © 2025</p>
+    </div>
+
+    <script>
+        function goToHome() {
+            window.location.href = 'index.html';
+        }
+        
+        function goToLevels(subject) {
+            window.location.href = 'subject-levels.html?subject=' + subject;
+        }
+        
+        // 选择学科并进入关卡选择页面
+        function selectSubject(subject) {
+            goToLevels(subject);
+        }
+        
+        // 页面加载时检查用户登录状态
+        document.addEventListener('DOMContentLoaded', function() {
+            checkLoginStatus();
+        });
+        
+        // 检查用户登录状态，未登录则跳转到登录页面
+        function checkLoginStatus() {
+            const user = localStorage.getItem('user');
+            const usernameDisplay = document.getElementById('usernameDisplay');
+            
+            if (user) {
+                const userData = JSON.parse(user);
+                usernameDisplay.textContent = userData.username;
+            } else {
+                // 未登录用户无法访问单人模式
+                alert('请先登录后再访问单人模式');
+                window.location.href = 'login.html';
+            }
+        }
+    </script>
+</body>
+</html>

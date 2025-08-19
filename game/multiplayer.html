@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学科海龟汤 - 多人模式</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            color: white;
+        }
+
+        .mode-title {
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .user-account {
+            font-size: 18px;
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 20px;
+        }
+
+        .main-content {
+            text-align: center;
+            padding: 100px 20px;
+            min-height: calc(100vh - 140px);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .page-title {
+            font-size: 48px;
+            color: white;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            margin-bottom: 80px;
+            font-weight: bold;
+        }
+
+        .room-options {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .room-button {
+            width: 250px;
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            font-weight: bold;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            color: white;
+        }
+
+        .room-button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        .create-room {
+            background: linear-gradient(45deg, #4ECDC4, #556270);
+        }
+
+        .join-room {
+            background: linear-gradient(45deg, #45B7D1, #96C93D);
+        }
+
+        .back-button {
+            position: fixed;
+            left: 20px;
+            bottom: 20px;
+            padding: 15px 30px;
+            font-size: 20px;
+            background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .back-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            margin: 0;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+            background: none;
+            border: none;
+        }
+
+        .close-button:hover {
+            color: #333;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+            color: #333;
+        }
+
+        .input-group {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        .room-input {
+            flex: 1;
+            padding: 15px;
+            font-size: 18px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            outline: none;
+        }
+
+        .room-input:focus {
+            border-color: #45B7D1;
+        }
+
+        .confirm-button {
+            padding: 15px 25px;
+            margin-left: 10px;
+            font-size: 18px;
+            background: linear-gradient(45deg, #45B7D1, #96C93D);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .confirm-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px 20px;
+            }
+            
+            .mode-title {
+                font-size: 20px;
+            }
+            
+            .user-account {
+                font-size: 16px;
+                padding: 8px 15px;
+            }
+            
+            .main-content {
+                padding: 60px 10px 80px;
+                min-height: calc(100vh - 120px);
+            }
+            
+            .page-title {
+                font-size: 36px;
+                margin-bottom: 40px;
+            }
+            
+            .room-options {
+                flex-direction: column;
+                align-items: center;
+                gap: 30px;
+            }
+            
+            .room-button {
+                width: 200px;
+                height: 120px;
+                font-size: 28px;
+            }
+            
+            .modal-content {
+                padding: 20px;
+            }
+            
+            .modal-title {
+                font-size: 20px;
+            }
+            
+            .input-group {
+                flex-direction: column;
+            }
+            
+            .room-input {
+                margin-bottom: 10px;
+            }
+            
+            .confirm-button {
+                margin-left: 0;
+                padding: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-title {
+                font-size: 28px;
+                margin-bottom: 30px;
+            }
+            
+            .room-button {
+                width: 180px;
+                height: 100px;
+                font-size: 24px;
+            }
+            
+            .footer {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="mode-title" onclick="goToHome()">学科海龟汤</div>
+        <div class="user-account" id="usernameDisplay">游客</div>
+    </div>
+
+    <div class="main-content">
+        <h1 class="page-title">房间选项</h1>
+        
+        <div class="room-options">
+            <button class="room-button create-room" onclick="createRoom()">创建房间</button>
+            <button class="room-button join-room" onclick="joinRoom()">加入房间</button>
+        </div>
+    </div>
+
+    <!-- 创建房间弹窗 -->
+    <div id="createRoomModal" class="modal">
+        <div class="modal-content">
+            <button class="close-button" onclick="closeModal('createRoomModal')">&times;</button>
+            <h2 class="modal-title">请设置您的房间名称：</h2>
+            <div class="input-group">
+                <input type="text" class="room-input" id="createRoomInput" placeholder="输入房间名称">
+                <button class="confirm-button" onclick="confirmCreateRoom()">完成</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 加入房间弹窗 -->
+    <div id="joinRoomModal" class="modal">
+        <div class="modal-content">
+            <button class="close-button" onclick="closeModal('joinRoomModal')">&times;</button>
+            <h2 class="modal-title">请输入您的房间名称：</h2>
+            <div class="input-group">
+                <input type="text" class="room-input" id="joinRoomInput" placeholder="输入房间名称">
+                <button class="confirm-button" onclick="confirmJoinRoom()">完成</button>
+            </div>
+        </div>
+    </div>
+
+    <button class="back-button" onclick="goToHome()">返回主页</button>
+
+    <div class="footer">
+        <p>学科海龟汤游戏 © 2025</p>
+    </div>
+
+    <script>
+        function goToHome() {
+            window.location.href = 'index.html';
+        }
+        
+        // 页面加载时检查用户登录状态
+        document.addEventListener('DOMContentLoaded', function() {
+            checkLoginStatus();
+        });
+        
+        // 检查用户登录状态，未登录则跳转到登录页面
+        function checkLoginStatus() {
+            const user = localStorage.getItem('user');
+            const usernameDisplay = document.getElementById('usernameDisplay');
+            
+            if (user) {
+                const userData = JSON.parse(user);
+                usernameDisplay.textContent = userData.username;
+            } else {
+                // 未登录用户无法访问多人模式
+                alert('请先登录后再访问多人模式');
+                window.location.href = 'login.html';
+            }
+        }
+        
+        // 检查房间号是否输入
+        function checkRoom() {
+            const roomNumber = document.getElementById('roomNumber').value;
+            if (!roomNumber) {
+                alert('请输入房间号');
+                return;
+            }
+            // 这里可以添加加入房间的逻辑
+            window.location.href = 'room.html?room=' + roomNumber;
+        }
+        
+        // 创建房间
+        function createRoom() {
+            document.getElementById('createRoomModal').style.display = 'block';
+        }
+        
+        // 加入房间
+        function joinRoom() {
+            document.getElementById('joinRoomModal').style.display = 'block';
+        }
+        
+        // 关闭模态框
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+        
+        // 确认创建房间
+        async function confirmCreateRoom() {
+            const roomName = document.getElementById('createRoomInput').value.trim();
+            if (!roomName) {
+                alert('请输入房间名称');
+                return;
+            }
+            
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    alert('请先登录');
+                    window.location.href = 'login.html';
+                    return;
+                }
+                
+                const response = await fetch('/api/game/rooms', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ name: roomName })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    // 跳转到房间页面
+                    window.location.href = `room.html?room=${encodeURIComponent(roomName)}&mode=create`;
+                } else {
+                    alert(data.message || '创建房间失败');
+                }
+            } catch (error) {
+                console.error('创建房间失败:', error);
+                alert('网络错误，请稍后重试');
+            }
+        }
+        
+        // 确认加入房间
+        async function confirmJoinRoom() {
+            const roomName = document.getElementById('joinRoomInput').value.trim();
+            if (!roomName) {
+                alert('请输入房间名称');
+                return;
+            }
+            
+            try {
+                const token = localStorage.getItem('token');
+                if (!token) {
+                    alert('请先登录');
+                    window.location.href = 'login.html';
+                    return;
+                }
+                
+                const response = await fetch('/api/game/rooms/join', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ name: roomName })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    // 跳转到房间页面
+                    window.location.href = `room.html?room=${encodeURIComponent(roomName)}&mode=join`;
+                } else {
+                    alert(data.message || '加入房间失败');
+                }
+            } catch (error) {
+                console.error('加入房间失败:', error);
+                alert('网络错误，请稍后重试');
+            }
+        }
+        
+        // 点击模态框外部关闭模态框
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

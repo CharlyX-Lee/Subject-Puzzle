@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学科海龟汤 - 游戏规则</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            position: relative;
+            color: #333;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            color: white;
+        }
+
+        .rules-title {
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .user-account {
+            font-size: 18px;
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 10px 20px;
+            border-radius: 20px;
+        }
+
+        .main-content {
+            padding: 30px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .page-title {
+            font-size: 42px;
+            color: white;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .subtitle {
+            font-size: 24px;
+            color: #FFD700;
+            text-align: center;
+            margin-bottom: 40px;
+            font-weight: bold;
+        }
+
+        .rules-container {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 24px;
+            color: #667eea;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+
+        .subsection-title {
+            font-size: 20px;
+            color: #764ba2;
+            margin: 20px 0 10px 0;
+        }
+
+        .rules-text {
+            line-height: 1.8;
+            font-size: 16px;
+        }
+
+        .rules-text p {
+            margin-bottom: 15px;
+        }
+
+        .rules-text ul {
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .rules-text li {
+            margin-bottom: 10px;
+        }
+
+        .warning {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .example {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin: 15px 0;
+            font-style: italic;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #667eea;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .back-button {
+            position: fixed;
+            left: 20px;
+            bottom: 20px;
+            padding: 15px 30px;
+            font-size: 20px;
+            background: linear-gradient(45deg, #FF6B6B, #FF8E53);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .back-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px 20px;
+            }
+            
+            .rules-title {
+                font-size: 20px;
+            }
+            
+            .user-account {
+                font-size: 16px;
+                padding: 8px 15px;
+            }
+            
+            .main-content {
+                padding: 20px 15px;
+            }
+            
+            .page-title {
+                font-size: 32px;
+                margin-bottom: 15px;
+            }
+            
+            .subtitle {
+                font-size: 20px;
+                margin-bottom: 30px;
+            }
+            
+            .rules-container {
+                padding: 20px;
+            }
+            
+            .section-title {
+                font-size: 20px;
+            }
+            
+            .subsection-title {
+                font-size: 18px;
+            }
+            
+            .rules-text {
+                font-size: 14px;
+            }
+            
+            th, td {
+                padding: 8px;
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-title {
+                font-size: 28px;
+            }
+            
+            .subtitle {
+                font-size: 18px;
+            }
+            
+            .section-title {
+                font-size: 18px;
+            }
+            
+            .rules-text {
+                font-size: 13px;
+            }
+            
+            .footer {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="rules-title" onclick="goToHome()">学科海龟汤</div>
+        <div class="user-account" id="usernameDisplay">游客</div>
+    </div>
+
+    <div class="main-content">
+        <h1 class="page-title">《学科海龟汤》游戏规则</h1>
+        <div class="subtitle">汤面藏玄机，巧问破迷题！用最少的提问揭开学科奥秘</div>
+        
+        <div class="rules-container">
+            <div class="section">
+                <h2 class="section-title">一、基础规则（所有模式通用）</h2>
+                
+                <h3 class="subsection-title">1. 核心玩法</h3>
+                <div class="rules-text">
+                    <p><strong>汤面：</strong>每个学科提供大方向的线索描述（如化学："化学式"）</p>
+                    <p><strong>谜底：</strong>一个学科该方向相关的词语/式子（如"Cu₂(OH)₂CO₃"）</p>
+                    <p><strong>提问限制：</strong>AI仅能回答"是"或"否"，因此请用一般疑问句进行提问。</p>
+                    
+                    <div class="example">
+                        <p><strong>例：</strong></p>
+                        <p>Q：是否与能量有关？ → A：是</p>
+                        <p>Q：需要通电吗？ → A：否</p>
+                    </div>
+                </div>
+                
+                <h3 class="subsection-title">2. 胜负关键</h3>
+                <div class="rules-text">
+                    <p><strong>提问效率：</strong>用最少问题逼近答案</p>
+                    <p><strong>联想能力：</strong>从学科角度解读线索</p>
+                    
+                    <p class="warning">温馨提示 禁止行为：</p>
+                    <ul>
+                        <li>⚠️ 直接问"谜底是XX吗？"（算失败）</li>
+                        <li>⚠️ 问题含多个判断点（如"是否需通电且放热？"）</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">二、单人模式：学科征服者</h2>
+                
+                <h3 class="subsection-title">闯关流程</h3>
+                <div class="rules-text">
+                    <p>任意一个学科都有三道关卡，分别代表着三种汤面。</p>
+                    <p>玩家需从关卡1开始游戏，连续闯3关后取得胜利，获得该学科的"先知"称号。</p>
+                </div>
+                
+                <h3 class="subsection-title">规则详解</h3>
+                <div class="rules-text">
+                    <p><strong>1. 关卡结构</strong></p>
+                    <ul>
+                        <li>每学科3道固定汤面（类型固定，谜底随机）</li>
+                        <li>例：化学学科始终包含"方程式""实验现象""反应类型"三类汤面*</li>
+                        <li>谜底从学科词库随机生成（如生物词库：["光合作用","减数分裂","自然选择"]）</li>
+                    </ul>
+                    
+                    <p><strong>2. 通关条件</strong></p>
+                    <ul>
+                        <li>连续答出3个谜底 完成3关即征服该学科</li>
+                        <li>失败可无限重试（但记录总提问次数）</li>
+                    </ul>
+                    
+                    <p><strong>3. 奖励机制</strong></p>
+                    <ul>
+                        <li>每关获得学科碎片</li>
+                        <li>集齐3碎片→ 解锁学科勋章（如黄金烧杯徽章）</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h2 class="section-title">三、多人模式：脑力竞技场</h2>
+                
+                <h3 class="subsection-title">核心规则</h3>
+                <div class="rules-text">
+                    <p><strong>1. 房间设置</strong></p>
+                    <ul>
+                        <li>人数：2-5人（含房主）</li>
+                        <li>房主选择学科类别（如物理/天文），所有人点击"已准备"后由房主点击"开始游戏"，进入游戏页面。</li>
+                    </ul>
+                    
+                    <p><strong>2. 同步机制</strong></p>
+                    <ul>
+                        <li>所有玩家面对同一汤面 + 同一谜底</li>
+                        <li>实时显示对手进度条（不泄露具体问题）</li>
+                    </ul>
+                    
+                    <p><strong>3. 胜负判定</strong></p>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>排名依据</th>
+                                    <th>优先级</th>
+                                    <th>示例</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>猜中速度</td>
+                                    <td>最高</td>
+                                    <td>玩家A用时1分20秒排名第一</td>
+                                </tr>
+                                <tr>
+                                    <td>提问次数</td>
+                                    <td>次之</td>
+                                    <td>同时间猜中，提问少者胜</td>
+                                </tr>
+                                <tr>
+                                    <td>历史胜率</td>
+                                    <td>平局时</td>
+                                    <td>胜率70% > 胜率65%</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="back-button" onclick="goToHome()">返回主页</button>
+
+    <div class="footer">
+        <p>学科海龟汤游戏 © 2025</p>
+    </div>
+
+    <script>
+        function goToHome() {
+            window.location.href = 'index.html';
+        }
+        
+        // 页面加载时检查用户登录状态
+        document.addEventListener('DOMContentLoaded', function() {
+            checkLoginStatus();
+        });
+        
+        // 检查用户登录状态
+        function checkLoginStatus() {
+            const user = localStorage.getItem('user');
+            const usernameDisplay = document.getElementById('usernameDisplay');
+            
+            if (user) {
+                const userData = JSON.parse(user);
+                usernameDisplay.textContent = userData.username;
+            } else {
+                usernameDisplay.textContent = '游客';
+            }
+        }
+    </script>
+</body>
+</html>

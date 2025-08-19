@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学科猜词海龟汤 - Subject Puzzle</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 800px;
+            padding: 30px;
+            text-align: center;
+            position: relative; /* 为绝对定位的用户信息提供参考 */
+        }
+        
+        /* 添加用户信息样式 */
+        .user-info {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            display: none;
+            align-items: center;
+        }
+        
+        .user-info span {
+            margin-right: 10px;
+            color: #333;
+        }
+        
+        .user-info button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-left: 5px;
+        }
+        
+        .user-info button:hover {
+            opacity: 0.9;
+        }
+        
+        .auth-buttons {
+            display: flex;
+            gap: 5px;
+        }
+        
+        .auth-buttons a {
+            text-decoration: none;
+            color: white;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 14px;
+        }
+        
+        .auth-buttons a:hover {
+            opacity: 0.9;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        .game-description {
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        
+        .features {
+            text-align: left;
+            margin: 30px 0;
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+        }
+        
+        .features h2 {
+            color: #333;
+            margin-top: 0;
+        }
+        
+        .features ul {
+            padding-left: 20px;
+        }
+        
+        .features li {
+            margin-bottom: 10px;
+            color: #555;
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: transform 0.3s;
+            margin: 10px;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .mode-selection {
+            margin: 30px 0;
+        }
+        
+        .mode-card {
+            background: #f0f0f0;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .mode-card:hover {
+            background: #e0e0e0;
+            transform: translateY(-5px);
+        }
+        
+        .mode-card h3 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+        
+        .mode-card p {
+            margin: 0;
+            color: #666;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .close {
+            float: right;
+            font-size: 24px;
+            cursor: pointer;
+            line-height: 1;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        
+        select, input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        
+        .form-actions {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 1px solid #667eea;
+            color: #667eea;
+        }
+        
+        .user-actions {
+            margin: 30px 0;
+        }
+        
+        footer {
+            margin-top: 30px;
+            color: #888;
+            font-size: 14px;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                width: 95%;
+                padding: 20px;
+            }
+            
+            .modal-content {
+                width: 95%;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="user-info" id="loggedInInfo">
+            <span>用户名：<span id="currentUsernameDisplay"></span></span>
+            <button id="logoutBtnTop">退出登录</button>
+        </div>
+        <div class="user-info" id="loggedOutInfo" style="display: none;">
+            <div class="auth-buttons">
+                <a href="/login.html">用户登录</a>
+                <a href="/register.html">用户注册</a>
+            </div>
+        </div>
+        
+        <h1>学科猜词海龟汤</h1>
+        
+        <div class="game-description">
+            <p>欢迎来到基于通义千问大模型的智能猜谜游戏！</p>
+            <p>系统会根据你选择的学科方向生成一个谜题，你需要通过提问来缩小答案范围，最终猜出正确答案。</p>
+        </div>
+        
+        <div class="mode-selection">
+            <h2>选择游戏模式</h2>
+            <div class="mode-card" onclick="startSoloMode()">
+                <h3>单机模式</h3>
+                <p>独自挑战谜题，测试你的推理能力</p>
+            </div>
+            <div class="mode-card" onclick="startPVPMode()">
+                <h3>多人PVP模式</h3>
+                <p>与朋友一起竞技，看谁先猜出答案</p>
+            </div>
+        </div>
+        
+        <div class="features">
+            <h2>游戏特色</h2>
+            <ul>
+                <li>支持多个学科：天文、历史、地理、物理、化学、生物等</li>
+                <li>基于通义千问大模型，提供智能化问答体验</li>
+                <li>完善的用户系统：注册、登录、积分累计</li>
+                <li>管理员功能：用户管理、权限控制</li>
+                <li>提示系统：每道题可获取一次提示帮助解题</li>
+            </ul>
+        </div>
+        
+        <footer>
+            <p>基于通义千问大模型技术 | 学科猜词海龟汤 - Subject Puzzle</p>
+        </footer>
+    </div>
+    
+    <!-- 单机模式设置模态框 -->
+    <div id="soloModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeSoloModal()">&times;</span>
+            <h2>单机模式设置</h2>
+            <form id="soloForm">
+                <div class="form-group">
+                    <label for="soloSubject">选择学科:</label>
+                    <select id="soloSubject" required>
+                        <option value="">请选择学科</option>
+                        <option value="天文">天文</option>
+                        <option value="历史">历史</option>
+                        <option value="地理">地理</option>
+                        <option value="物理">物理</option>
+                        <option value="化学">化学</option>
+                        <option value="生物">生物</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn">开始游戏</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- 加入房间确认模态框 -->
+    <div id="joinRoomModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeJoinRoomModal()">&times;</span>
+            <h2>加入房间邀请</h2>
+            <p>您被邀请加入房间: <span id="inviteRoomId"></span></p>
+            <p>房主: <span id="inviteRoomOwner"></span></p>
+            <p>游戏学科: <span id="inviteSubject"></span></p>
+            <p>游戏轮数: <span id="inviteRounds"></span></p>
+            <p>最多提问次数: <span id="inviteMaxQuestions"></span></p>
+            <button class="btn" onclick="acceptInvite()">接受邀请</button>
+            <button class="btn btn-outline" onclick="declineInvite()">拒绝邀请</button>
+        </div>
+    </div>
+
+    <script>
+        let currentUser = null;
+        
+        // 页面加载完成后检查用户登录状态
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthStatus();
+            bindEvents();
+        });
+        
+        // 检查用户认证状态
+        function checkAuthStatus() {
+            const token = localStorage.getItem('token');
+            const user = JSON.parse(localStorage.getItem('user'));
+            
+            if (token && user) {
+                currentUser = user;
+                // 更新顶部用户信息
+                document.getElementById('currentUsernameDisplay').textContent = user.username;
+                document.getElementById('loggedInInfo').style.display = 'flex';
+                document.getElementById('loggedOutInfo').style.display = 'none';
+                
+                // 用户登录后保留在首页，不自动跳转到游戏页面
+            } else {
+                // 显示顶部登录/注册按钮
+                document.getElementById('loggedInInfo').style.display = 'none';
+                document.getElementById('loggedOutInfo').style.display = 'flex';
+            }
+        }
+        
+        // 绑定事件
+        function bindEvents() {
+            // 退出登录按钮（顶部）
+            document.getElementById('logoutBtnTop').addEventListener('click', function() {
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+                checkAuthStatus();
+            });
+            
+            
+            // 单机模式表单提交
+            document.getElementById('soloForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                const subject = document.getElementById('soloSubject').value;
+                if (subject) {
+                    closeSoloModal();
+                    // 跳转到游戏页面
+                    window.location.href = '/game.html?mode=solo&subject=' + encodeURIComponent(subject);
+                }
+            });
+        }
+        
+        // 开始单机模式
+        function startSoloMode() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert('请先登录后再开始游戏');
+                window.location.href = '/login.html';
+                return;
+            }
+            document.getElementById('soloModal').style.display = 'flex';
+        }
+        
+        // 关闭单机模式模态框
+        function closeSoloModal() {
+            document.getElementById('soloModal').style.display = 'none';
+        }
+        
+        // 开始PVP模式（直接创建房间）
+        function startPVPMode() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert('请先登录后再开始游戏');
+                window.location.href = '/login.html';
+                return;
+            }
+            
+            // 直接跳转到游戏页面，创建新房间
+            window.location.href = '/game.html?mode=pvp';
+        }
+        
+        // 模拟收到房间邀请
+        function receiveRoomInvite(inviteData) {
+            currentInvite = inviteData;
+            document.getElementById('inviteRoomId').textContent = inviteData.roomId;
+            document.getElementById('inviteRoomOwner').textContent = inviteData.owner;
+            document.getElementById('inviteSubject').textContent = inviteData.subject;
+            document.getElementById('inviteRounds').textContent = inviteData.rounds;
+            document.getElementById('inviteMaxQuestions').textContent = inviteData.maxQuestions;
+            document.getElementById('joinRoomModal').style.display = 'flex';
+        }
+        
+        // 关闭加入房间模态框
+        function closeJoinRoomModal() {
+            document.getElementById('joinRoomModal').style.display = 'none';
+        }
+        
+        // 接受邀请
+        function acceptInvite() {
+            if (currentInvite) {
+                closeJoinRoomModal();
+                // 跳转到游戏页面并加入房间
+                window.location.href = `/game.html?mode=pvp&roomId=${currentInvite.roomId}`;
+            }
+        }
+        
+        // 拒绝邀请
+        function declineInvite() {
+            closeJoinRoomModal();
+            currentInvite = null;
+        }
+        
+        // 点击模态框外部关闭
+        window.onclick = function(event) {
+            const soloModal = document.getElementById('soloModal');
+            const joinRoomModal = document.getElementById('joinRoomModal');
+            
+            if (event.target === soloModal) {
+                soloModal.style.display = 'none';
+            }
+            
+            if (event.target === joinRoomModal) {
+                joinRoomModal.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
